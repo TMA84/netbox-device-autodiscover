@@ -49,6 +49,7 @@ class DeviceDiscovery:
         """
         try:
             community = self.config.get('snmp_community', 'public')
+            logger.info(f"🔎 Attempting SNMP discovery for {self.ip} with community '{community}'...")
             
             # SNMP OIDs for common device information
             oids = {
@@ -76,13 +77,19 @@ class DeviceDiscovery:
                 for varBind in varBinds:
                     self.device_info[key] = str(varBind[1])
             
-            # Discover interfaces
-            self.discover_interfaces_snmp()
-            
-            logger.info(f"SNMP discovery successful for {self.ip}: {self.device_info}")
+            if self.device_info:
+                logger.info(f"✅ SNMP discovery successful for {self.ip}")
+                logger.info(f"   - System Name: {self.device_info.get('sysName', 'N/A')}")
+                logger.info(f"   - Description: {self.device_info.get('sysDescr', 'N/A')[:80]}...")
+                logger.info(f"   - Location: {self.device_info.get('sysLocation', 'N/A')}")
+                
+                # Discover interfaces
+                self.discover_interfaces_snmp()
+            else:
+                logger.warning(f"⚠️  SNMP discovery returned no data for {self.ip}")
         
         except Exception as e:
-            logger.warning(f"SNMP discovery failed for {self.ip}: {str(e)}")
+            logger.warning(f"⚠️  SNMP discovery failed for {self.ip}: {str(e)}")
     
     def discover_interfaces_snmp(self):
         """
@@ -125,34 +132,43 @@ class DeviceDiscovery:
         Basic discovery using DNS and ping.
         """
         try:
+            logger.info(f"🔎 Attempting DNS lookup for {self.ip}...")
             # Try reverse DNS lookup
             hostname = socket.gethostbyaddr(self.ip)[0]
             self.device_info['sysName'] = hostname
-            logger.info(f"Basic discovery found hostname: {hostname} for {self.ip}")
+            logger.info(f"✅ DNS lookup successful: {hostname}")
         except socket.herror:
             # Use IP as hostname if DNS fails
             self.device_info['sysName'] = f"device-{self.ip.replace('.', '-')}"
-            logger.info(f"No DNS record, using generated name for {self.ip}")
+            logger.info(f"⚠️  No DNS record found, using generated name: {self.device_info['sysName']}")
     
     def create_device(self):
         """
         Create device and related objects in NetBox.
         """
         try:
+            logger.info(f"📝 Creating device in NetBox...")
+            
             # Get or create manufacturer
             manufacturer = self.get_or_create_manufacturer()
+            logger.info(f"   ✓ Manufacturer: {manufacturer.name}")
             
             # Get or create device type
             device_type = self.get_or_create_device_type(manufacturer)
+            logger.info(f"   ✓ Device Type: {device_type.model}")
             
             # Get or create device role
             device_role = self.get_or_create_device_role()
+            logger.info(f"   ✓ Device Role: {device_role.name}")
             
             # Get or create site
             site = self.get_or_create_site()
+            logger.info(f"   ✓ Site: {site.name}")
             
             # Get or create platform
             platform = self.get_or_create_platform()
+            if platform:
+                logger.info(f"   ✓ Platform: {platform.name}")
             
             # Create device name
             device_name = self.device_info.get('sysName', f"device-{self.ip.replace('.', '-')}")
@@ -160,7 +176,7 @@ class DeviceDiscovery:
             # Check if device already exists
             existing_device = Device.objects.filter(name=device_name).first()
             if existing_device:
-                logger.info(f"Device {device_name} already exists")
+                logger.info(f"ℹ️  Device {device_name} already exists, skipping creation")
                 return existing_device
             
             # Create device
@@ -172,12 +188,17 @@ class DeviceDiscovery:
                 platform=platform,
                 comments=f"Auto-discovered from IP {self.ip}\n{self.device_info.get('sysDescr', '')}"
             )
+            logger.info(f"   ✓ Device created: {device.name}")
             
             # Create management interface
             self.create_management_interface(device)
+            logger.info(f"   ✓ Management interface created")
             
             # Create additional interfaces
-            self.create_interfaces(device)
+            interface_count = len(self.device_info.get('interfaces', []))
+            if interface_count > 0:
+                self.create_interfaces(device)
+                logger.info(f"   ✓ Created {interface_count} additional interfaces")
             
             # Add auto-discovery tag
             tag, _ = Tag.objects.get_or_create(
@@ -185,12 +206,15 @@ class DeviceDiscovery:
                 defaults={'color': '4caf50', 'description': 'Automatically discovered device'}
             )
             device.tags.add(tag)
+            logger.info(f"   ✓ Tagged as 'auto-discovered'")
             
-            logger.info(f"Device created successfully: {device.name}")
+            logger.info(f"✅ Device creation complete: {device.name}")
             return device
         
         except Exception as e:
-            logger.error(f"Error creating device: {str(e)}")
+            logger.error(f"❌ Error creating device: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
             return None
 
     
