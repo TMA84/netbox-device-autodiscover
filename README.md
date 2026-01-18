@@ -64,7 +64,31 @@ Simply create a new IP address in NetBox. The plugin will automatically:
    - Management interface with the IP assigned
    - Additional interfaces discovered via SNMP
 
-## Configuration Options
+## Configuration
+
+The plugin can be configured in two ways:
+
+### 1. Web UI Configuration (Recommended) ⭐
+
+Configure the plugin through NetBox's admin interface:
+
+1. Log in to NetBox as an admin
+2. Go to **Admin** (click your username → Admin)
+3. Find **Auto-Discovery Configuration** under "NETBOX_DEVICE_AUTODISCOVERY"
+4. Configure settings:
+   - **Default Site**: Select a site for all discovered devices (⚠️ Important!)
+   - **Default Device Role**: Select a role (e.g., "Network Device")
+   - **Default Tenant**: Optional tenant assignment
+   - **Default Location**: Optional location assignment
+   - **SNMP Community**: Your SNMP community string
+   - **Device Name Template**: Customize device naming
+   - Enable/disable features as needed
+
+**See [CONFIGURATION_GUIDE.md](CONFIGURATION_GUIDE.md) for detailed configuration options.**
+
+### 2. Configuration File Method
+
+Add to your NetBox `configuration.py`: Options
 
 | Setting | Default | Description |
 |---------|---------|-------------|
