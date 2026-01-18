@@ -1,0 +1,5 @@
+include README.md
+include LICENSE
+include requirements.txt
+recursive-include netbox_device_autodiscovery/templates *
+recursive-include netbox_device_autodiscovery/static *
