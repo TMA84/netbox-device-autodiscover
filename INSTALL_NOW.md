@@ -13,39 +13,26 @@ docker ps | grep netbox
 
 Look for something like `addon_a0d7b954_netbox` or `878443c7-netbox`
 
-### 2. Access the Container and Install
+### 2. Install the Plugin
 
-**Option A: Use --break-system-packages (Recommended for HA Addon)**
+**One-Line Install (Recommended)**
+
+```bash
+# Replace XXXXXXXX with your addon ID
+docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
+```
+
+**Or Install from Inside Container**
 
 ```bash
 # Access container
 docker exec -it addon_XXXXXXXX_netbox /bin/bash
 
-# Install with --break-system-packages flag
-pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
-```
+# Install using NetBox's virtual environment
+/opt/netbox/.venv/bin/pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
 
-**Option B: Find and Use NetBox's Virtual Environment**
-
-```bash
-# Access container
-docker exec -it addon_XXXXXXXX_netbox /bin/bash
-
-# Find the actual NetBox venv
-ls -la /opt/netbox/
-ls -la /usr/local/
-
-# If venv exists at /opt/netbox/venv
-/opt/netbox/venv/bin/pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
-
-# Or if no venv, use --break-system-packages
-pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
-```
-
-**Option C: One-Line Install from Outside Container**
-
-```bash
-docker exec -it addon_XXXXXXXX_netbox pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
+# Exit
+exit
 ```
 
 ### 3. Configure NetBox
@@ -90,7 +77,7 @@ Then restart the NetBox addon from Home Assistant:
 After restart, check if the plugin is installed:
 
 ```bash
-docker exec -it addon_XXXXXXXX_netbox pip list | grep netbox-device
+docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip list | grep netbox-device
 ```
 
 You should see `netbox-device-autodiscovery` in the list.

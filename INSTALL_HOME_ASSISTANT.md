@@ -15,17 +15,18 @@ Since NetBox runs as a Home Assistant addon, you need to install the plugin insi
 
 3. **Install the Plugin**
    
-   The NetBox container uses a managed Python environment. Use the `--break-system-packages` flag:
+   NetBox uses a virtual environment at `/opt/netbox/.venv`. Install into that environment:
    
    ```bash
    # Inside the container
-   pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
+   # Use the virtual environment's pip directly
+   /opt/netbox/.venv/bin/pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
    
    # Or if published to PyPI:
-   pip install --break-system-packages netbox-device-autodiscovery
+   /opt/netbox/.venv/bin/pip install netbox-device-autodiscovery
    ```
    
-   **Note:** The `--break-system-packages` flag is safe for Docker containers since they're isolated environments.
+   **Note:** Do NOT use `--break-system-packages` when installing into the venv.
 
 4. **Configure NetBox**
    
@@ -103,9 +104,8 @@ Since addon containers are ephemeral, create a custom NetBox addon that includes
 
 3. **Install from Mounted Volume**
    ```bash
-   # Inside container - activate NetBox venv first
-   source /opt/netbox/venv/bin/activate
-   pip install -e /config/netbox-plugins/netbox_device_autodiscovery
+   # Inside container - use NetBox's venv pip
+   /opt/netbox/.venv/bin/pip install -e /config/netbox-plugins/netbox_device_autodiscovery
    ```
 
 4. **Configure and Restart** (same as Method 1)
@@ -147,8 +147,7 @@ To make it installable via `pip install netbox-device-autodiscovery`:
 5. **Then Install in NetBox Container**
    ```bash
    # Inside the NetBox container
-   source /opt/netbox/venv/bin/activate
-   pip install netbox-device-autodiscovery
+   /opt/netbox/.venv/bin/pip install netbox-device-autodiscovery
    ```
 
 ## Persistence Considerations
@@ -168,7 +167,7 @@ docker ps | grep netbox
 
 **Check if Plugin is Installed:**
 ```bash
-docker exec -it addon_XXXXXXXX_netbox pip list | grep netbox-device
+docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip list | grep netbox-device
 ```
 
 **View Logs:**
