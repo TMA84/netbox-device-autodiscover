@@ -35,7 +35,21 @@ docker exec -it addon_XXXXXXXX_netbox /bin/bash
 exit
 ```
 
-### 3. Configure NetBox
+### 3. Run Database Migrations
+
+**Important!** After installing, run migrations to create database tables:
+
+```bash
+docker exec -it addon_XXXXXXXX_netbox python /opt/netbox/netbox/manage.py migrate netbox_device_autodiscovery
+```
+
+You should see:
+```
+Running migrations:
+  Applying netbox_device_autodiscovery.0001_initial... OK
+```
+
+### 4. Configure NetBox
 
 Find your NetBox configuration file (usually `/config/configuration.py` or `/data/configuration.py`):
 
@@ -71,6 +85,21 @@ exit
 Then restart the NetBox addon from Home Assistant:
 - Go to Settings → Add-ons → NetBox
 - Click "Restart"
+
+### 5. Configure the Plugin (Important!)
+
+After restart:
+
+1. **Log in to NetBox** as admin
+2. **Go to Admin**: Click username → Admin
+3. **Find "Auto-Discovery Configuration"** under "NETBOX_DEVICE_AUTODISCOVERY"
+4. **Click "Add"** (or edit existing)
+5. **Set at minimum**:
+   - Default Site: Select an existing site
+   - SNMP Community: Your SNMP community string
+6. **Save**
+
+**If you can't find the configuration interface**, see [MANUAL_MIGRATION.md](MANUAL_MIGRATION.md)
 
 ## Verify Installation
 

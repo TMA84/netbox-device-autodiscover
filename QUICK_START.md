@@ -39,6 +39,14 @@ docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip install git+http
 docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip install netbox-device-autodiscovery
 ```
 
+**After installation, run migrations:**
+
+```bash
+docker exec -it addon_XXXXXXXX_netbox python /opt/netbox/netbox/manage.py migrate netbox_device_autodiscovery
+```
+
+Then restart the NetBox addon from Home Assistant.
+
 Then add to NetBox configuration:
 ```python
 PLUGINS = ['netbox_device_autodiscovery']
