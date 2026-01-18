@@ -35,7 +35,13 @@ Once published, anyone can install it:
 # Access NetBox container
 docker exec -it addon_XXXXXXXX_netbox /bin/bash
 
-# Install plugin
+# Activate NetBox virtual environment
+source /opt/netbox/venv/bin/activate
+
+# Install from GitHub (available now!)
+pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
+
+# Or from PyPI (once published)
 pip install netbox-device-autodiscovery
 
 # Exit

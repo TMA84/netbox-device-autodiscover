@@ -14,18 +14,19 @@ Since NetBox runs as a Home Assistant addon, you need to install the plugin insi
    ```
 
 3. **Install the Plugin**
+   
+   The NetBox container uses a managed Python environment. You need to use the NetBox virtual environment:
+   
    ```bash
    # Inside the container
-   cd /tmp
+   # Activate NetBox's virtual environment
+   source /opt/netbox/venv/bin/activate
    
-   # Clone or copy the plugin files
-   # If you have git access:
-   git clone https://github.com/yourusername/netbox-device-autodiscovery.git
+   # Install directly from GitHub
+   pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
    
-   # Or manually copy files to the container
-   # Then install:
-   cd netbox-device-autodiscovery
-   pip install .
+   # Or if published to PyPI:
+   pip install netbox-device-autodiscovery
    ```
 
 4. **Configure NetBox**
@@ -104,19 +105,24 @@ Since addon containers are ephemeral, create a custom NetBox addon that includes
 
 3. **Install from Mounted Volume**
    ```bash
-   # Inside container
+   # Inside container - activate NetBox venv first
+   source /opt/netbox/venv/bin/activate
    pip install -e /config/netbox-plugins/netbox_device_autodiscovery
    ```
 
 4. **Configure and Restart** (same as Method 1)
 
-## Method 4: Install from GitHub (If Published)
+## Method 4: Install from GitHub (Easiest!)
 
-Once you publish the plugin to GitHub:
+Install directly from the GitHub repository:
 
 ```bash
 # Inside the NetBox container
-pip install git+https://github.com/yourusername/netbox-device-autodiscovery.git
+# First activate the NetBox virtual environment
+source /opt/netbox/venv/bin/activate
+
+# Then install from GitHub
+pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
 ```
 
 ## Method 5: Publish to PyPI (Best Long-term Solution)
@@ -142,6 +148,8 @@ To make it installable via `pip install netbox-device-autodiscovery`:
 
 5. **Then Install in NetBox Container**
    ```bash
+   # Inside the NetBox container
+   source /opt/netbox/venv/bin/activate
    pip install netbox-device-autodiscovery
    ```
 
@@ -162,7 +170,7 @@ docker ps | grep netbox
 
 **Check if Plugin is Installed:**
 ```bash
-docker exec -it addon_XXXXXXXX_netbox pip list | grep netbox-device
+docker exec -it addon_XXXXXXXX_netbox /opt/netbox/venv/bin/pip list | grep netbox-device
 ```
 
 **View Logs:**
