@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netbox-device-autodiscovery"
+version = "1.0.0"
+description = "NetBox plugin for automatic device discovery when IP addresses are created"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "NetBox Plugin", email = "[email]"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Django",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "pysnmp>=4.4.12",
+    "netmiko>=3.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/TMA84/netbox-device-autodiscover"
+Repository = "https://github.com/TMA84/netbox-device-autodiscover"
+Issues = "https://github.com/TMA84/netbox-device-autodiscover/issues"
+
+[tool.setuptools]
+packages = ["netbox_device_autodiscovery"]
+include-package-data = true
+zip-safe = false
