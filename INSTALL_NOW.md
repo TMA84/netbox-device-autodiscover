@@ -11,26 +11,44 @@ The plugin is ready to use immediately from GitHub!
 docker ps | grep netbox
 ```
 
-Look for something like `addon_a0d7b954_netbox`
+Look for something like `addon_a0d7b954_netbox` or `878443c7-netbox`
 
-### 2. Access the Container
+### 2. Access the Container and Install
+
+**Option A: Use --break-system-packages (Recommended for HA Addon)**
 
 ```bash
+# Access container
 docker exec -it addon_XXXXXXXX_netbox /bin/bash
-```
-(Replace `XXXXXXXX` with your actual addon ID)
 
-### 3. Install the Plugin
+# Install with --break-system-packages flag
+pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
+```
+
+**Option B: Find and Use NetBox's Virtual Environment**
 
 ```bash
-# Activate NetBox's virtual environment
-source /opt/netbox/venv/bin/activate
+# Access container
+docker exec -it addon_XXXXXXXX_netbox /bin/bash
 
-# Install from GitHub
-pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
+# Find the actual NetBox venv
+ls -la /opt/netbox/
+ls -la /usr/local/
+
+# If venv exists at /opt/netbox/venv
+/opt/netbox/venv/bin/pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
+
+# Or if no venv, use --break-system-packages
+pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
 ```
 
-### 4. Configure NetBox
+**Option C: One-Line Install from Outside Container**
+
+```bash
+docker exec -it addon_XXXXXXXX_netbox pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
+```
+
+### 3. Configure NetBox
 
 Find your NetBox configuration file (usually `/config/configuration.py` or `/data/configuration.py`):
 
@@ -56,7 +74,7 @@ PLUGINS_CONFIG = {
 }
 ```
 
-### 5. Exit and Restart
+### 4. Exit and Restart
 
 ```bash
 # Exit the container
@@ -69,12 +87,10 @@ Then restart the NetBox addon from Home Assistant:
 
 ## Verify Installation
 
-After restart, access the container again and check:
+After restart, check if the plugin is installed:
 
 ```bash
-docker exec -it addon_XXXXXXXX_netbox /bin/bash
-source /opt/netbox/venv/bin/activate
-pip list | grep netbox-device
+docker exec -it addon_XXXXXXXX_netbox pip list | grep netbox-device
 ```
 
 You should see `netbox-device-autodiscovery` in the list.
@@ -101,9 +117,7 @@ docker logs -f addon_XXXXXXXX_netbox
 
 **Plugin not loading?**
 ```bash
-docker exec -it addon_XXXXXXXX_netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py shell
->>> from netbox_device_autodiscovery import config
->>> print(config.name)
+docker exec -it addon_XXXXXXXX_netbox python -c "from netbox_device_autodiscovery import config; print(config.name)"
 ```
 
 ## Configuration Options

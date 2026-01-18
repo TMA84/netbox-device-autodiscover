@@ -15,19 +15,17 @@ Since NetBox runs as a Home Assistant addon, you need to install the plugin insi
 
 3. **Install the Plugin**
    
-   The NetBox container uses a managed Python environment. You need to use the NetBox virtual environment:
+   The NetBox container uses a managed Python environment. Use the `--break-system-packages` flag:
    
    ```bash
    # Inside the container
-   # Activate NetBox's virtual environment
-   source /opt/netbox/venv/bin/activate
-   
-   # Install directly from GitHub
-   pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
+   pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
    
    # Or if published to PyPI:
-   pip install netbox-device-autodiscovery
+   pip install --break-system-packages netbox-device-autodiscovery
    ```
+   
+   **Note:** The `--break-system-packages` flag is safe for Docker containers since they're isolated environments.
 
 4. **Configure NetBox**
    
@@ -170,7 +168,7 @@ docker ps | grep netbox
 
 **Check if Plugin is Installed:**
 ```bash
-docker exec -it addon_XXXXXXXX_netbox /opt/netbox/venv/bin/pip list | grep netbox-device
+docker exec -it addon_XXXXXXXX_netbox pip list | grep netbox-device
 ```
 
 **View Logs:**

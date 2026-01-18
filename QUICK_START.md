@@ -29,24 +29,17 @@ twine upload dist/*
 
 ## To Install in Home Assistant
 
-Once published, anyone can install it:
+Install it right now from GitHub:
 
 ```bash
-# Access NetBox container
-docker exec -it addon_XXXXXXXX_netbox /bin/bash
+# One-line install (replace XXXXXXXX with your addon ID)
+docker exec -it addon_XXXXXXXX_netbox pip install --break-system-packages git+https://github.com/TMA84/netbox-device-autodiscover.git
 
-# Activate NetBox virtual environment
-source /opt/netbox/venv/bin/activate
-
-# Install from GitHub (available now!)
-pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
-
-# Or from PyPI (once published)
-pip install netbox-device-autodiscovery
-
-# Exit
-exit
+# Or once published to PyPI:
+docker exec -it addon_XXXXXXXX_netbox pip install --break-system-packages netbox-device-autodiscovery
 ```
+
+**Note:** The `--break-system-packages` flag is safe for Docker containers.
 
 Then add to NetBox configuration:
 ```python
