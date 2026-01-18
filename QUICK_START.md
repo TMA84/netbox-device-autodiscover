@@ -33,10 +33,10 @@ Install it right now from GitHub:
 
 ```bash
 # One-line install (replace XXXXXXXX with your addon ID)
-docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
+docker exec -it addon_XXXXXXXX_netbox uv pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
 
 # Or once published to PyPI:
-docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip install netbox-device-autodiscovery
+docker exec -it addon_XXXXXXXX_netbox uv pip install netbox-device-autodiscovery
 ```
 
 **After installation, run migrations:**

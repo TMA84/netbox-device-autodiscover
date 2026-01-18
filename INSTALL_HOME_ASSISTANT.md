@@ -15,18 +15,15 @@ Since NetBox runs as a Home Assistant addon, you need to install the plugin insi
 
 3. **Install the Plugin**
    
-   NetBox uses a virtual environment at `/opt/netbox/.venv`. Install into that environment:
+   NetBox uses `uv` as the package manager:
    
    ```bash
    # Inside the container
-   # Use the virtual environment's pip directly
-   /opt/netbox/.venv/bin/pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
+   uv pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
    
    # Or if published to PyPI:
-   /opt/netbox/.venv/bin/pip install netbox-device-autodiscovery
+   uv pip install netbox-device-autodiscovery
    ```
-   
-   **Note:** Do NOT use `--break-system-packages` when installing into the venv.
 
 4. **Configure NetBox**
    
@@ -104,8 +101,8 @@ Since addon containers are ephemeral, create a custom NetBox addon that includes
 
 3. **Install from Mounted Volume**
    ```bash
-   # Inside container - use NetBox's venv pip
-   /opt/netbox/.venv/bin/pip install -e /config/netbox-plugins/netbox_device_autodiscovery
+   # Inside container - use uv
+   uv pip install -e /config/netbox-plugins/netbox_device_autodiscovery
    ```
 
 4. **Configure and Restart** (same as Method 1)
@@ -147,7 +144,7 @@ To make it installable via `pip install netbox-device-autodiscovery`:
 5. **Then Install in NetBox Container**
    ```bash
    # Inside the NetBox container
-   /opt/netbox/.venv/bin/pip install netbox-device-autodiscovery
+   uv pip install netbox-device-autodiscovery
    ```
 
 ## Persistence Considerations
@@ -167,7 +164,7 @@ docker ps | grep netbox
 
 **Check if Plugin is Installed:**
 ```bash
-docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip list | grep netbox-device
+docker exec -it addon_XXXXXXXX_netbox uv pip list | grep netbox-device
 ```
 
 **View Logs:**

@@ -56,18 +56,18 @@ After restart:
 
 This is normal on first run. The migration will create the table.
 
-### Error: "Plugin not found"
+### Error: "Plugin not found" or "No installed app"
 
 Check if plugin is installed:
 ```bash
-docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip list | grep netbox-device
+docker exec -it addon_XXXXXXXX_netbox uv pip list | grep netbox-device
 ```
 
 Should show: `netbox-device-autodiscovery    1.0.0`
 
 If not installed, reinstall:
 ```bash
-docker exec -it addon_XXXXXXXX_netbox /opt/netbox/.venv/bin/pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
+docker exec -it addon_XXXXXXXX_netbox uv pip install git+https://github.com/TMA84/netbox-device-autodiscover.git
 ```
 
 ### Error: "Module has no migrations"
