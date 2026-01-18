@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "Apache-2.0"}
 authors = [
-    {name = "NetBox Plugin", email = "[email]"}
+    {name = "NetBox Plugin", email = "plugin@example.com"}
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
