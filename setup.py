@@ -13,7 +13,7 @@ setup(
     long_description_content_type='text/markdown',
     author='NetBox Plugin',
     author_email='[email]',
-    url='https://github.com/yourusername/netbox-device-autodiscovery',
+    url='https://github.com/TMA84/netbox-device-autodiscover',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
